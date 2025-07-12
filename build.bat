@@ -10,6 +10,12 @@ if errorlevel 1 exit /b 1
 ifx /c /O2 /nologo /warn:all /module:build /object:build\if_sampling.obj src\if_sampling.f90
 if errorlevel 1 exit /b 1
 
+ifx /c /O2 /nologo /warn:all /module:build /object:build\if_tree.obj src\if_tree.f90
+if errorlevel 1 exit /b 1
+
+ifx /c /O2 /nologo /warn:all /module:build /object:build\if_forest.obj src\if_forest.f90
+if errorlevel 1 exit /b 1
+
 REM Compile main
 ifx /c /O2 /nologo /warn:all /module:build /object:build\main.obj main.f90
 if errorlevel 1 exit /b 1

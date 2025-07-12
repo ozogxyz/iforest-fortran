@@ -3,7 +3,8 @@ module if_sampling
 contains
 
   subroutine subsample(n_samples, psi, sample_idx)
-    integer, intent(in) :: n_samples, psi
+    integer, intent(in) :: n_samples
+    integer, intent(in) :: psi
     integer, intent(out) :: sample_idx(:)
 
     integer :: i, j

@@ -9,5 +9,13 @@ module if_types
      type(TreeNode), pointer :: right => null()
      integer                 :: size
   end type TreeNode
-  
+
+  type :: Tree
+     type(TreeNode), pointer :: root => null()
+  end type Tree
+
+  type IsolationForest
+     type(Tree), allocatable :: trees(:)
+     integer :: n_trees
+  end type IsolationForest
 end module if_types
