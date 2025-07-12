@@ -15,7 +15,7 @@ A minimal and clean Fortran implementation of the Isolation Forest algorithm for
 
 ## Build
 
-Requires Intel Fortran (`ifx`) and a `build.bat` script.  
+Requires Intel Fortran (`ifx`) and a `build.bat` script.  Haven't tested with gfortran or on Unix yet.
 See `src/` for modules, `main.f90` for test harness.
 
 ## License
