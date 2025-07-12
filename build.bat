@@ -16,6 +16,12 @@ if errorlevel 1 exit /b 1
 ifx /c /O2 /nologo /warn:all /module:build /object:build\if_forest.obj src\if_forest.f90
 if errorlevel 1 exit /b 1
 
+ifx /c /O2 /nologo /warn:all /module:build /object:build\if_api.obj src\if_api.f90
+if errorlevel 1 exit /b 1
+
+REM Create static lib
+lib /nologo /out:build\libiforest.lib build\*.obj
+
 REM Compile main
 ifx /c /O2 /nologo /warn:all /module:build /object:build\main.obj main.f90
 if errorlevel 1 exit /b 1

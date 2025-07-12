@@ -42,4 +42,7 @@ module if_types
      type(Tree), allocatable :: trees(:)
      integer :: n_trees
   end type IsolationForest
+
+  integer, parameter :: dp = kind(1.0d0)
+
 end module if_types
