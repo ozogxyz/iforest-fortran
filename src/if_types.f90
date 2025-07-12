@@ -24,11 +24,16 @@
 
 module if_types
   implicit none
+  private
+
+  integer, parameter :: dp = kind(1.0d0)
+  
+  public :: TreeNode, Tree, IsolationForest, dp
   
   type :: TreeNode
      logical                 :: is_leaf
      integer                 :: split_feature
-     real(8)                 :: split_value
+     real(dp)                :: split_value
      type(TreeNode), pointer :: left => null()
      type(TreeNode), pointer :: right => null()
      integer                 :: size
@@ -42,7 +47,5 @@ module if_types
      type(Tree), allocatable :: trees(:)
      integer :: n_trees
   end type IsolationForest
-
-  integer, parameter :: dp = kind(1.0d0)
 
 end module if_types

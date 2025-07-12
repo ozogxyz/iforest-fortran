@@ -24,33 +24,29 @@
 
 program if_main
   use if_types
-  use if_sampling
-  use if_tree
-  use if_forest
+  use if_api
   implicit none
 
-  integer, parameter :: n_samples = 10, n_features = 2, psi = 5, n_trees = 3
-  real(8) :: X(n_samples, n_features)
-  type(IsolationForest) :: forest
+  integer, parameter :: num_samples = 10, num_features = 2
+  real(dp) :: M(num_samples, num_features), x(num_features), score
   integer :: i
-  real(8) :: scores(n_samples)
 
-  ! Fill X with some values: X(i, j) = i + j*0.1
-  do i = 1, n_samples
-     X(i,1) = real(i,8)
-     X(i,2) = real(i,8) * 0.1
+  ! Fill X with some values
+  do i = 1, num_samples
+     M(i,1) = real(i,dp)
+     M(i,2) = real(2*i,dp) + sin(real(i, dp))
   end do
 
-  call train_forest(forest, X, n_samples, n_features, psi, n_trees)
+  call fit(M, num_samples, num_features)
+    
+  ! Test a normal point
+  x = [5.0_dp, 10.0_dp]
+  call get_score(x, num_features, score)
+  print *, "Normal score:", score
 
-  print *, 'Trained forest with', forest%n_trees, 'trees.'
-
-  call predict_scores(forest, X, n_samples, n_features, scores)
-
-  print *, 'Anomaly scores:'
-  do i = 1, n_samples
-     write(*,'(A,I2,A,2F10.4,A,F10.6)') 'X(', i, ',:) =', X(i,1), X(i,2), ' → score =', scores(i)
-
-  end do
+  ! Test an outlier
+  x = [100.0_dp, -50.0_dp]
+  call get_score(x, num_features, score)
+  print *, "Outlier score:", score
   
 end program if_main

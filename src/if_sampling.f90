@@ -32,7 +32,8 @@ contains
     integer, intent(out) :: sample_idx(:)
 
     integer :: i, j
-    real :: tmp
+    real :: rtmp
+    integer :: tmp
     integer, allocatable :: perm(:)
 
     if (size(sample_idx) /= psi) stop "sample_idx wrong size"
@@ -43,8 +44,8 @@ contains
     call random_seed() ! optional: reseed RNG
     ! Fisher-Yates shuffle
     do i = n_samples, 2, -1
-       call random_number(tmp)
-       j = 1 + int(tmp * i)
+       call random_number(rtmp)
+       j = 1 + int(rtmp * i)
        tmp = perm(i)
        perm(i) = perm(j)
        perm(j) = tmp

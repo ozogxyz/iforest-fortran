@@ -29,15 +29,15 @@ module if_tree
 contains
 
   recursive function build_tree(X, idx, height, height_limit) result(node)
-    real(8), intent(in) :: X(:,:)
+    real(dp), intent(in) :: X(:,:)
     integer, intent(in) :: idx(:)
     integer, intent(in) :: height, height_limit
     type(TreeNode), pointer :: node
     integer :: n_features, split_feature
-    real(8) :: r
+    real(dp) :: r
     integer :: i
-    real(8) :: fmin, fmax, val
-    real(8) :: split_value
+    real(dp) :: fmin, fmax
+    real(dp) :: split_value
     integer :: left_count, right_count
     integer, allocatable :: left_idx(:), right_idx(:)
     
@@ -49,33 +49,47 @@ contains
        return
     end if
 
+    ! Split feature selection
     n_features = size(X, 2)
     call random_number(r)
     split_feature = 1 + int(r * n_features)
-    fmin = huge(0.0_8)
-    fmax = -huge(0.0_8)
 
-    do i = 1, size(idx)
-       val = X(idx(i), split_feature)
-       if (val < fmin) fmin = val
-       if (val > fmax) fmax = val
-    end do
+    ! Compute range on selected feature
+    fmin = minval(X(idx, split_feature))
+    fmax = maxval(X(idx, split_feature))
 
+    ! Check if split is possible
     if (fmax == fmin) then
        node%is_leaf = .true.
        node%size = size(idx)
        return
     end if
 
+    ! Pick random split in (fmin, fmax) interval
     call random_number(r)
     split_value = fmin + r * (fmax - fmin)
 
-    allocate(left_idx(left_count), right_idx(right_count))
+    ! First pass: count
     left_count = 0
     right_count = 0
+
     do i = 1, size(idx)
-       val = X(idx(i), split_feature)
-       if (val < split_value) then
+       if (X(idx(i), split_feature) < split_value) then
+          left_count = left_count + 1
+       else
+          right_count = right_count + 1
+       end if
+    end do
+
+    ! Allocate based on count
+    allocate(left_idx(left_count), right_idx(right_count))
+
+    ! Second pass: assign
+    left_count = 0
+    right_count = 0
+
+    do i = 1, size(idx)
+       if (X(idx(i), split_feature) < split_value) then
           left_count = left_count + 1
           left_idx(left_count) = idx(i)
        else
@@ -87,6 +101,7 @@ contains
     node%is_leaf = .false.
     node%split_feature = split_feature
     node%split_value = split_value
+    node%size = size(idx)
 
     node%left  => build_tree(X, left_idx, height + 1, height_limit)
     node%right => build_tree(X, right_idx, height + 1, height_limit)
@@ -99,13 +114,13 @@ contains
     implicit none
 
     type(TreeNode), pointer :: node
-    real(8), intent(in) :: x(:)
+    real(dp), intent(in) :: x(:)
     integer, intent(in) :: depth
-    real(8) :: h
+    real(dp) :: h
 
     if (node%is_leaf) then
        if (node%size <= 1) then
-          h = depth * 1.0_8
+          h = depth * 1.0_dp
        else
           h = depth + c(node%size)
        end if
@@ -121,12 +136,12 @@ contains
 
   pure function c(n) result(res)
     integer, intent(in) :: n
-    real(8) :: res
+    real(dp) :: res
 
     if (n <= 1) then
-       res = 0.0_8
+       res = 0.0_dp
     else
-       res = 2.0_8 * log(real(n)) + 0.5772156649_8 - 2.0_8 * (real(n - 1) / real(n))
+       res = 2.0_dp * log(real(n)) + 0.5772156649_dp - 2.0_dp * (real(n - 1) / real(n))
     end if
   end function c
 end module if_tree
